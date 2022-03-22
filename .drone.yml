@@ -1,0 +1,30 @@
+---
+kind: pipeline
+type: docker
+name: default
+
+#trigger:
+#  branch:
+#    - master
+#    - develop
+#  event:
+#    - cron
+#    - push
+
+steps:
+- name: build:maven
+  image: maven:3-jdk-8-alpine
+  commands:
+  - mvn clean package -DskipTests=true
+- name: build:docker
+  image: plugins/docker
+  settings:
+    username:
+      from_secret:
+        docker_username
+    password:
+      from_secret:
+        docker_password
+    pull_image: false
+    repo: kit101z/kkfileview
+    tags: latest
